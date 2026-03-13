@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  /** Set to your deployed backend URL (e.g. Railway or Render). No trailing slash. */
-  apiBase: 'https://219jamclub-api.up.railway.app',
+  /** Injected at build from NG_APP_API_BASE (e.g. on Vercel). No trailing slash. */
+  apiBase: '',
 };
