@@ -1,0 +1,53 @@
+# Deploy 219 Jam Club to Azure App Service (single app: API + SPA in wwwroot)
+# Set GitHub secrets: AZURE_WEBAPP_NAME (e.g. 219jamclub), AZURE_WEBAPP_PUBLISH_PROFILE (from App Service → Deployment Center → Manage publish profile)
+name: Deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+  PUBLISH_OUTPUT: publish_output
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npx ng build --configuration=production
+
+      - name: Copy SPA to backend wwwroot
+        run: |
+          mkdir -p backend/VenueApi/wwwroot
+          cp -r frontend/dist/frontend/browser/* backend/VenueApi/wwwroot/
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Publish backend
+        run: |
+          dotnet publish backend/VenueApi/VenueApi.csproj -c Release -o ${{ env.PUBLISH_OUTPUT }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.PUBLISH_OUTPUT }}

@@ -57,5 +57,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
