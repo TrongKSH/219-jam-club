@@ -54,6 +54,11 @@
                 "glob": "**/*",
                 "input": "assets",
                 "output": "/assets"
+              },
+              {
+                "glob": "vercel.json",
+                "input": ".",
+                "output": "/"
               }
             ],
             "styles": [
