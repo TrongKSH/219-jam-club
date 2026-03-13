@@ -1,0 +1,296 @@
+@if (landing | async; as content) {
+  <div class="page">
+    <!-- Nav -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="#home" (click)="scrollTo('#home'); $event.preventDefault()" class="logo">
+          <span class="logo-main">{{ content.hero.headline }}</span><span class="logo-accent">{{ content.hero.headlineAccent }}</span>
+        </a>
+        <div class="nav-desktop">
+          @for (item of navItems; track item.href) {
+            <a [href]="item.href" (click)="scrollTo(item.href); $event.preventDefault()" class="nav-link">{{ item.name }}</a>
+          }
+        </div>
+        <button type="button" class="nav-mobile-btn" (click)="mobileMenuOpen.set(!mobileMenuOpen())" aria-label="Menu">
+          {{ mobileMenuOpen() ? '✕' : '☰' }}
+        </button>
+      </div>
+      @if (mobileMenuOpen()) {
+        <div class="nav-mobile">
+          @for (item of navItems; track item.href) {
+            <a [href]="item.href" (click)="scrollTo(item.href); $event.preventDefault()" class="nav-link">{{ item.name }}</a>
+          }
+        </div>
+      }
+    </nav>
+
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-bg">
+        <img [src]="content.hero.heroImageUrl" alt="Venue stage" class="hero-img" />
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title"><span class="logo-main">{{ content.hero.headline }}</span><span class="logo-accent">{{ content.hero.headlineAccent }}</span></h1>
+        <p class="hero-tagline">{{ content.hero.tagline }}</p>
+        <div class="hero-ctas">
+          <a [href]="content.hero.primaryCtaLink" (click)="scrollTo(content.hero.primaryCtaLink); $event.preventDefault()" class="btn btn-primary">{{ content.hero.primaryCtaText }}</a>
+          <a [href]="content.hero.secondaryCtaLink" (click)="scrollTo(content.hero.secondaryCtaLink); $event.preventDefault()" class="btn btn-secondary">{{ content.hero.secondaryCtaText }}</a>
+        </div>
+      </div>
+      <div class="hero-gradient-bottom"></div>
+    </section>
+
+    <!-- Upcoming Shows -->
+    @if (upcoming | async; as shows) {
+      <section class="section section-black">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="section-title">UPCOMING SHOWS</h2>
+            <a href="#calendar" (click)="scrollTo('#calendar'); $event.preventDefault()" class="link-accent">See All →</a>
+          </div>
+          <div class="show-grid">
+            @for (show of shows; track show.band + show.date) {
+              <div class="show-card">
+                <div class="show-date">{{ show.date }}</div>
+                <div class="show-day">{{ show.day }}</div>
+                <h3 class="show-band">{{ show.band }}</h3>
+                <div class="show-genre">{{ show.genre }}</div>
+                <div class="show-time">🕐 {{ show.time }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Gallery -->
+    <section class="section section-dark">
+      <div class="container">
+        <h2 class="section-title">{{ content.gallery.title }}</h2>
+        <div class="gallery-grid">
+          @for (url of content.gallery.imageUrls; track url) {
+            <div class="gallery-item">
+              <img [src]="url" alt="Venue" loading="lazy" />
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Strip -->
+    <section class="section section-black">
+      <div class="container">
+        <div class="info-grid">
+          @for (item of content.infoStrip; track item.title) {
+            <div class="info-item">
+              <div class="info-icon">♪</div>
+              <h3 class="info-title">{{ item.title }}</h3>
+              <p class="info-desc">{{ item.description }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendar -->
+    @if (events | async; as gigs) {
+      <section id="calendar" class="section section-dark">
+        <div class="container">
+          <div class="calendar-head">
+            <h1 class="calendar-title">UPCOMING SHOWS</h1>
+            <p class="calendar-sub">Click on any show for more details</p>
+          </div>
+          <div class="gigs-grid">
+            @for (gig of gigs; track gig.id) {
+              <div class="gig-card" (click)="openGig(gig)">
+                <div class="gig-poster-wrap">
+                  <img [src]="gig.posterUrl" [alt]="gig.band" loading="lazy" />
+                  <div class="gig-poster-overlay"></div>
+                  <div class="gig-poster-info">
+                    <div class="gig-day">{{ gig.day }}</div>
+                    <div class="gig-date">{{ gig.date }}</div>
+                    <h3 class="gig-band">{{ gig.band }}</h3>
+                    <div class="gig-genre">♪ {{ gig.genre }}</div>
+                    <div class="gig-time">🕐 {{ gig.time }}</div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="book-banner">
+            <h3 class="book-heading">{{ content.bookYourSpot.heading }}</h3>
+            <p class="book-body">{{ content.bookYourSpot.body }}</p>
+            <a href="#contact" (click)="scrollTo('#contact'); $event.preventDefault()" class="btn btn-dark">{{ content.bookYourSpot.ctaText }}</a>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Gig Modal -->
+    @if (selectedGig(); as gig) {
+      <div class="modal-backdrop" (click)="closeGig()">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+          <div class="modal-layout">
+            <div class="modal-poster">
+              <img [src]="gig.posterUrl" [alt]="gig.band" />
+            </div>
+            <div class="modal-body">
+              <button type="button" class="modal-close" (click)="closeGig()" aria-label="Close">✕</button>
+              <div class="modal-day">{{ gig.day }}</div>
+              <div class="modal-date">{{ gig.date }}</div>
+              <h2 class="modal-band">{{ gig.band }}</h2>
+              <div class="modal-genre">♪ {{ gig.genre }}</div>
+              <div class="modal-time">🕐 {{ gig.time }}</div>
+              <div class="modal-about">
+                <h3>ABOUT THIS SHOW</h3>
+                <p>{{ gig.description }}</p>
+              </div>
+              <a href="#contact" (click)="scrollTo('#contact'); closeGig(); $event.preventDefault()" class="btn btn-primary btn-block">Reserve Your Spot</a>
+              <button type="button" class="btn btn-outline btn-block" (click)="closeGig()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- About -->
+    <section id="about" class="section section-black">
+      <div class="container">
+        <div class="about-hero">
+          <img [src]="content.about.heroImageUrl" alt="Venue" />
+          <div class="about-hero-overlay"></div>
+          <h1 class="about-hero-title">ABOUT US</h1>
+        </div>
+        <div class="about-story">
+          <h2 class="section-title">OUR STORY</h2>
+          @for (p of content.about.storyParagraphs; track p) {
+            <p class="about-p">{{ p }}</p>
+          }
+        </div>
+        <h2 class="section-title section-title-center">WHAT WE STAND FOR</h2>
+        <div class="values-grid">
+          @for (v of content.about.values; track v.title) {
+            <div class="value-item">
+              <div class="info-icon">{{ v.title === 'LIVE MUSIC' ? '♪' : v.title === 'COMMUNITY' ? '👥' : v.title === 'PASSION' ? '♥' : '🏆' }}</div>
+              <h3 class="info-title">{{ v.title }}</h3>
+              <p class="info-desc">{{ v.description }}</p>
+            </div>
+          }
+        </div>
+        <div class="stats-grid">
+          @for (s of content.about.stats; track s.label) {
+            <div class="stat-item">
+              <div class="stat-number">{{ s.number }}</div>
+              <div class="stat-label">{{ s.label }}</div>
+            </div>
+          }
+        </div>
+        <div class="team-block">
+          <h2 class="section-title">THE TEAM</h2>
+          <p class="about-p">{{ content.about.teamCopy }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section section-dark">
+      <div class="container">
+        <div class="contact-head">
+          <h1 class="calendar-title">GET IN TOUCH</h1>
+          <p class="contact-sub">Have questions? Want to book a show? We'd love to hear from you.</p>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h2 class="section-title">CONTACT INFO</h2>
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <div>
+                <h3 class="contact-label">ADDRESS</h3>
+                <p>{{ content.contact.addressLine1 }}<br />{{ content.contact.addressLine2 }}<br />{{ content.contact.addressLine3 }}</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <div>
+                <h3 class="contact-label">PHONE</h3>
+                <p>{{ content.contact.phone1 }}<br />{{ content.contact.phone2 }}</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">✉</div>
+              <div>
+                <h3 class="contact-label">EMAIL</h3>
+                <p>{{ content.contact.email1 }}<br />{{ content.contact.email2 }}</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">🕐</div>
+              <div>
+                <h3 class="contact-label">HOURS</h3>
+                <p>{{ content.contact.hoursText }}</p>
+              </div>
+            </div>
+            <div class="social-block">
+              <h3 class="info-title">FOLLOW US</h3>
+              <div class="social-links">
+                @for (link of content.contact.socialLinks; track link) {
+                  <a [href]="link" target="_blank" rel="noopener" class="social-btn">FB</a>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="contact-form-block">
+            <h2 class="section-title">SEND A MESSAGE</h2>
+            <form class="contact-form" (submit)="$event.preventDefault()">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-input" placeholder="Your name" />
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" placeholder="your@email.com" />
+              <label class="form-label">Subject</label>
+              <input type="text" class="form-input" placeholder="What's this about?" />
+              <label class="form-label">Message</label>
+              <textarea class="form-input form-textarea" rows="6" placeholder="Tell us more..."></textarea>
+              <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+            </form>
+          </div>
+        </div>
+        <div class="booking-info">
+          <h2 class="section-title section-title-center">BOOKING INFORMATION</h2>
+          <p class="about-p">{{ content.contact.bookingInfo }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="logo footer-logo"><span class="logo-main">{{ content.hero.headline }}</span><span class="logo-accent">{{ content.hero.headlineAccent }}</span></div>
+            <p class="footer-tagline">{{ content.footer.tagline }}</p>
+          </div>
+          <div>
+            <h3 class="footer-head">Quick Links</h3>
+            <ul class="footer-links">
+              @for (item of navItems; track item.href) {
+                <li><a [href]="item.href" (click)="scrollTo(item.href); $event.preventDefault()">{{ item.name }}</a></li>
+              }
+            </ul>
+          </div>
+          <div>
+            <h3 class="footer-head">Connect</h3>
+            <ul class="footer-links">
+              <li>Facebook</li>
+              <li>Instagram</li>
+              <li>Twitter</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-copy">© {{ content.footer.copyrightText }}</div>
+      </div>
+    </footer>
+  </div>
+} @else {
+  <div class="loading">Loading…</div>
+}
