@@ -33,20 +33,19 @@ jobs:
 
       - name: Copy SPA to backend wwwroot
         run: |
-          echo "Full frontend/dist tree:"
-          find frontend/dist -type f 2>/dev/null | head -50
-          echo "---"
-          SPA_INDEX=$(find frontend -name "index.html" -path "*/dist/*" 2>/dev/null | head -1)
-          if [ -z "$SPA_INDEX" ]; then
-            echo "ERROR: index.html not found under frontend. Searched:"
-            find frontend -name "index.html" 2>/dev/null || true
-            find frontend/dist -type f 2>/dev/null || true
+          SPA_DIR="frontend/dist/frontend/browser"
+          if [ ! -d "$SPA_DIR" ]; then
+            echo "ERROR: $SPA_DIR not found. Build output:"
+            find frontend/dist -type f 2>/dev/null | head -30
             exit 1
           fi
-          SPA_DIR=$(dirname "$SPA_INDEX")
           echo "Using SPA from: $SPA_DIR"
           mkdir -p backend/VenueApi/wwwroot
           cp -r "$SPA_DIR"/. backend/VenueApi/wwwroot/
+          if [ -f backend/VenueApi/wwwroot/index.csr.html ]; then
+            echo "Renaming index.csr.html to index.html (Angular SSR build)"
+            mv backend/VenueApi/wwwroot/index.csr.html backend/VenueApi/wwwroot/index.html
+          fi
           echo "wwwroot after copy:"
           ls -la backend/VenueApi/wwwroot/
 
