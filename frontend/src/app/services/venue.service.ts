@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, combineLatest } from 'rxjs';
 import { map, shareReplay, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface HeroContent {
   headline: string;
@@ -154,8 +155,10 @@ const DEFAULT_CONTACT: ContactContent = {
 export class VenueService {
   private http = inject(HttpClient);
 
+  private apiBase = environment.apiBase;
+
   /** Only contact is loaded from API (admin-editable). Rest is static. */
-  private contact$ = this.http.get<ContactContent>('/api/content/contact').pipe(
+  private contact$ = this.http.get<ContactContent>(`${this.apiBase}/api/content/contact`).pipe(
     catchError(() => of(DEFAULT_CONTACT)),
     shareReplay(1),
   );
@@ -165,8 +168,8 @@ export class VenueService {
     shareReplay(1),
   );
 
-  private events$ = this.http.get<EventItem[]>('/api/events').pipe(shareReplay(1));
-  private upcoming$ = this.http.get<UpcomingShow[]>('/api/events/upcoming?count=3').pipe(shareReplay(1));
+  private events$ = this.http.get<EventItem[]>(`${this.apiBase}/api/events`).pipe(shareReplay(1));
+  private upcoming$ = this.http.get<UpcomingShow[]>(`${this.apiBase}/api/events/upcoming?count=3`).pipe(shareReplay(1));
 
   getLanding(): Observable<LandingContent> {
     return this.landing$;

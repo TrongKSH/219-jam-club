@@ -2,6 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 const TOKEN_KEY = 'venue_admin_token';
 
@@ -27,7 +28,7 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http
-      .post<LoginResponse>('/api/auth/login', { username, password })
+      .post<LoginResponse>(`${environment.apiBase}/api/auth/login`, { username, password })
       .pipe(
         tap((res: LoginResponse) => {
           if (res.token) {
