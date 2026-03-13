@@ -1,0 +1,13 @@
+<div class="admin-shell">
+  <header class="admin-header">
+    <h1 class="admin-title">219 Jam Club – Admin</h1>
+    <nav class="admin-nav">
+      <a routerLink="/admin/contact" routerLinkActive="active">Contact</a>
+      <a routerLink="/admin/events" routerLinkActive="active">Gigs &amp; calendar</a>
+      <button type="button" class="btn-logout" (click)="logout()">Log out</button>
+    </nav>
+  </header>
+  <main class="admin-main">
+    <router-outlet />
+  </main>
+</div>

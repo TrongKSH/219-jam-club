@@ -1,7 +1,9 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VenueApi.Data;
+using VenueApi.Entities;
 
 namespace VenueApi.Controllers;
 
@@ -9,6 +11,11 @@ namespace VenueApi.Controllers;
 [Route("api/[controller]")]
 public class ContentController : ControllerBase
 {
+    private static readonly HashSet<string> AllowedKeys = new(StringComparer.OrdinalIgnoreCase)
+        { "hero", "gallery", "infoStrip", "about", "contact", "footer" };
+
+    private static readonly JsonSerializerOptions CamelOpts = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
     private readonly VenueDbContext _db;
 
     public ContentController(VenueDbContext db) => _db = db;
@@ -44,5 +51,27 @@ public class ContentController : ControllerBase
         };
 
         return Ok(payload);
+    }
+
+    [Authorize]
+    [HttpPut("{key}")]
+    public async Task<IActionResult> PutContent(string key, [FromBody] JsonElement body, CancellationToken ct)
+    {
+        if (!AllowedKeys.Contains(key))
+            return BadRequest(new { message = $"Invalid content key. Allowed: {string.Join(", ", AllowedKeys)}" });
+
+        var jsonValue = JsonSerializer.Serialize(body, CamelOpts);
+        var existing = await _db.SiteContents.FirstOrDefaultAsync(c => c.Key == key, ct);
+        if (existing != null)
+        {
+            existing.JsonValue = jsonValue;
+        }
+        else
+        {
+            _db.SiteContents.Add(new SiteContent { Key = key, JsonValue = jsonValue });
+        }
+
+        await _db.SaveChangesAsync(ct);
+        return NoContent();
     }
 }

@@ -1,0 +1,80 @@
+<div class="events-manager">
+  <h2>Gigs &amp; upcoming shows</h2>
+  <p class="page-intro">Add a new gig with a poster, or edit and delete gigs below. These appear on the public calendar.</p>
+  @if (message(); as msg) {
+    <div class="message" [class.success]="msg.type === 'success'" [class.error]="msg.type === 'error'">{{ msg.text }}</div>
+  }
+
+  <div class="form-section">
+    <div class="form-header">
+      <h3>{{ editingId() != null ? 'Edit this gig' : 'Add new gig' }}</h3>
+      <button type="button" class="btn-add-primary" (click)="add()">+ Add new gig</button>
+    </div>
+    <form [formGroup]="eventForm" (ngSubmit)="save()">
+      <div class="grid">
+        <div class="field field-datetime">
+          <label>Date &amp; time</label>
+          <input type="datetime-local" formControlName="dateTime" />
+        </div>
+        <div class="field"><label>Band / act</label><input formControlName="band" /></div>
+        <div class="field"><label>Genre</label><input formControlName="genre" /></div>
+        <div class="field field-full">
+          <label>Poster image</label>
+          <div class="url-row">
+            <input formControlName="posterUrl" placeholder="Upload a file below or paste an image URL" />
+            <label class="btn-upload" [class.uploading]="posterUploading()">
+              {{ posterUploading() ? 'Uploading…' : 'Choose file from computer' }}
+              <input type="file" accept="image/*" hidden (change)="onPosterUpload($event)" [disabled]="posterUploading()" />
+            </label>
+          </div>
+          @if (posterUrl(); as url) {
+            <p class="poster-preview-hint">Poster set. Save the gig to keep it.</p>
+            <div class="poster-preview"><img [src]="url" alt="Poster preview" /></div>
+          }
+        </div>
+      </div>
+      <div class="field"><label>Description</label><textarea formControlName="description" rows="3" placeholder="Short blurb for this gig"></textarea></div>
+      <div class="actions">
+        <button type="submit" class="btn-save">{{ editingId() != null ? 'Update gig' : 'Add gig' }}</button>
+        @if (editingId() != null) {
+          <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+        }
+      </div>
+    </form>
+  </div>
+
+  <div class="list-section">
+    <h3>All gigs (calendar)</h3>
+    @if (loading()) {
+      <p>Loading…</p>
+    } @else if (events().length === 0) {
+      <p class="empty-hint">No gigs yet. Use the form above to add your first gig.</p>
+    } @else {
+      <table class="events-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Band / act</th>
+            <th>Genre</th>
+            <th>Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events(); track event.id) {
+            <tr>
+              <td>{{ event.date }}</td>
+              <td>{{ event.band }}</td>
+              <td>{{ event.genre }}</td>
+              <td>{{ event.time }}</td>
+              <td class="actions-cell">
+                <button type="button" class="btn-edit" (click)="edit(event)">Edit</button>
+                <button type="button" class="btn-delete" (click)="delete(event)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

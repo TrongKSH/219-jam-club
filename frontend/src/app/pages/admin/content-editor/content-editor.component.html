@@ -1,0 +1,34 @@
+<div class="content-editor">
+  <h2>Contact info</h2>
+  @if (message(); as msg) {
+    <div class="message" [class.success]="msg.type === 'success'" [class.error]="msg.type === 'error'">{{ msg.text }}</div>
+  }
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else {
+    <section class="section">
+      <form [formGroup]="contactForm">
+        <div class="field"><label>Address line 1</label><input formControlName="addressLine1" /></div>
+        <div class="field"><label>Address line 2</label><input formControlName="addressLine2" /></div>
+        <div class="field"><label>Address line 3</label><input formControlName="addressLine3" /></div>
+        <div class="field"><label>Phone 1</label><input formControlName="phone1" /></div>
+        <div class="field"><label>Phone 2</label><input formControlName="phone2" /></div>
+        <div class="field"><label>Email 1</label><input formControlName="email1" /></div>
+        <div class="field"><label>Email 2</label><input formControlName="email2" /></div>
+        <div class="field"><label>Hours text</label><input formControlName="hoursText" /></div>
+        <div class="field">
+          <label>Social links (URLs)</label>
+          @for (ctrl of socialLinks.controls; track $index) {
+            <div class="row">
+              <input [formControl]="$any(ctrl)" />
+              <button type="button" class="btn-remove" (click)="removeSocialLink($index)">Remove</button>
+            </div>
+          }
+          <button type="button" class="btn-add" (click)="addSocialLink()">Add link</button>
+        </div>
+        <div class="field"><label>Booking info</label><textarea formControlName="bookingInfo" rows="4"></textarea></div>
+        <button type="button" class="btn-save" (click)="saveContact()">Save contact info</button>
+      </form>
+    </section>
+  }
+</div>

@@ -1,0 +1,251 @@
+.events-manager h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
+
+.page-intro {
+  margin: 0 0 1rem;
+  color: #52525b;
+  font-size: 0.9375rem;
+}
+
+.empty-hint {
+  color: #52525b;
+  font-style: italic;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field-datetime {
+  min-width: 12rem;
+}
+
+.field-datetime input[type="datetime-local"] {
+  color-scheme: light;
+}
+
+.btn-add-primary {
+  padding: 0.5rem 1rem;
+  font-size: 0.9375rem;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-add-primary:hover {
+  background: #b91c1c;
+}
+
+.message {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.message.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.message.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.form-section {
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.form-section h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.btn-add {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  background: #e4e4e7;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background: #d4d4d8;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.field {
+  margin-bottom: 0.75rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8125rem;
+  color: #52525b;
+  margin-bottom: 0.25rem;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  color: #18181b;
+  background: #fff;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #a1a1aa;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-save {
+  padding: 0.5rem 1rem;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #b91c1c;
+}
+
+.btn-cancel {
+  padding: 0.5rem 1rem;
+  background: #e4e4e7;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.list-section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.125rem;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.events-table th,
+.events-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.events-table th {
+  background: #f4f4f5;
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.btn-edit {
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.25rem;
+  font-size: 0.8125rem;
+  background: #e4e4e7;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.url-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.url-row input {
+  flex: 1;
+}
+
+.btn-upload {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  background: #e4e4e7;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-upload:hover {
+  background: #d4d4d8;
+}
+
+.btn-upload.uploading {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.poster-preview-hint {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.8125rem;
+  color: #52525b;
+}
+
+.poster-preview {
+  margin-top: 0.5rem;
+  max-width: 200px;
+}
+
+.poster-preview img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #e4e4e7;
+}

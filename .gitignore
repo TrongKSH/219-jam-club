@@ -26,6 +26,7 @@ backend/**/*.suo
 backend/**/venue.db
 backend/**/venue.db-shm
 backend/**/venue.db-wal
+backend/**/wwwroot/uploads/
 *.log
 
 # Env / secrets
