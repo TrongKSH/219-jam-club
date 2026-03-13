@@ -33,8 +33,13 @@ jobs:
 
       - name: Copy SPA to backend wwwroot
         run: |
+          echo "Angular build output:"
+          ls -la frontend/dist/frontend/ || true
+          ls -la frontend/dist/frontend/browser/ || true
           mkdir -p backend/VenueApi/wwwroot
-          cp -r frontend/dist/frontend/browser/* backend/VenueApi/wwwroot/
+          cp -r frontend/dist/frontend/browser/. backend/VenueApi/wwwroot/
+          echo "wwwroot after copy:"
+          ls -la backend/VenueApi/wwwroot/
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -44,6 +49,14 @@ jobs:
       - name: Publish backend
         run: |
           dotnet publish backend/VenueApi/VenueApi.csproj -c Release -o ${{ env.PUBLISH_OUTPUT }}
+
+      - name: Ensure SPA in publish output
+        run: |
+          mkdir -p ${{ env.PUBLISH_OUTPUT }}/wwwroot
+          cp -r backend/VenueApi/wwwroot/. ${{ env.PUBLISH_OUTPUT }}/wwwroot/
+          echo "Publish output wwwroot:"
+          ls -la ${{ env.PUBLISH_OUTPUT }}/wwwroot/
+          test -f ${{ env.PUBLISH_OUTPUT }}/wwwroot/index.html || (echo "ERROR: index.html missing in deploy package" && exit 1)
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
