@@ -53,6 +53,19 @@ public class ContentController : ControllerBase
         return Ok(payload);
     }
 
+    [HttpGet("{key}")]
+    public async Task<IActionResult> GetByKey(string key, CancellationToken ct)
+    {
+        if (!AllowedKeys.Contains(key))
+            return NotFound();
+        var content = await _db.SiteContents.AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Key == key, ct);
+        if (content == null)
+            return NotFound();
+        var element = JsonSerializer.Deserialize<JsonElement>(content.JsonValue);
+        return Ok(element);
+    }
+
     [Authorize]
     [HttpPut("{key}")]
     public async Task<IActionResult> PutContent(string key, [FromBody] JsonElement body, CancellationToken ct)
