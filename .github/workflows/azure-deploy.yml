@@ -35,9 +35,19 @@ jobs:
         run: |
           echo "Angular build output:"
           ls -la frontend/dist/frontend/ || true
-          ls -la frontend/dist/frontend/browser/ || true
+          ls -la frontend/dist/frontend/browser/ 2>/dev/null || true
           mkdir -p backend/VenueApi/wwwroot
-          cp -r frontend/dist/frontend/browser/. backend/VenueApi/wwwroot/
+          if [ -f frontend/dist/frontend/browser/index.html ]; then
+            echo "Using dist/frontend/browser/"
+            cp -r frontend/dist/frontend/browser/. backend/VenueApi/wwwroot/
+          elif [ -f frontend/dist/frontend/index.html ]; then
+            echo "Using dist/frontend/ (no browser subfolder)"
+            cp -r frontend/dist/frontend/. backend/VenueApi/wwwroot/
+          else
+            echo "ERROR: index.html not found in frontend/dist/frontend or frontend/dist/frontend/browser"
+            find frontend/dist -name "index.html" 2>/dev/null || true
+            exit 1
+          fi
           echo "wwwroot after copy:"
           ls -la backend/VenueApi/wwwroot/
 
